@@ -37,10 +37,9 @@ int main(int argc, char* argv[]) {
     }
 
     if (find24(nums)) {
-        std::cout << "Yup.\n";
         return 0;
     }   else    {
-        std::cout << "Nope.\n";
+        std::cout << "Cannot find a solution.\n";
         return 1;
     }
 
