@@ -3,13 +3,10 @@
 #include <sstream>
 
 bool calculate(int x, int y, int results[]);
-int runTheGamut(int x, int y);
 bool find24(int numbers[]);
-
-void testFunc();
+void printResults(bool were_the_numbers_swapped[], int first_operation_index, int second_operation_index, int third_operation_index, int nums[], int first_result, int second_result);
 
 const char operations[4] = {'+', '-', '*', '/'};
-
 
 int main(int argc, char* argv[]) {
     int nums[4];
@@ -24,7 +21,6 @@ int main(int argc, char* argv[]) {
 
     //  Check for proper input:
     //  four numbers...
-    // std::cout << "Entered " << argc - 1 << " arguments.\n";
     if (argc != 5)  {
         std::cout << "Please enter exactly four numbers; no more, no less.\n";
         return 1;
@@ -33,7 +29,6 @@ int main(int argc, char* argv[]) {
     //  ... all whole
     for (int i = 0; i < argc - 1; i++)
     {
-// std::cout << "num[" << i << "]: " << nums[i] << "\n";
         if (nums[i] < 0)
         {
             std::cout << "Whole numbers only, please; no negatives.\n";
@@ -47,16 +42,6 @@ int main(int argc, char* argv[]) {
     }   else    {
         std::cout << "Nope.\n";
         return 1;
-    }
-
-    for (int i = 0; i < argc - 2; ++i)
-    {
-        for (int j = i + 1; j < argc - 1; ++j)
-        {
-            calculate(nums[i], nums[j], results1);
-            // runTheGamut(nums[i], nums[j]);
-        }
-// std::cout << "returned " << results1[2] << "\n";
     }
 
     return 0;
@@ -88,59 +73,53 @@ bool calculate (int x, int y, int array[])  {
     return swapped;
 }
 
-int runTheGamut (int x, int y)  {
-    std::cout << x << " " << y << ": ";
-    (x > y) ? (std::cout << x) : (std::cout << y);
-    std::cout << "\n";
-}
-
-void testFunc() {
-    std::cout << "Yup, it works\n";
-}
-
 bool find24(int nums[])   {
     int first_results[4];
     int second_results[4];
     int third_results[4];
     int skip_quotient;
-    bool swapped_first, swapped_second, swapped_third;
+    bool swapped[3];
 
-    swapped_first = calculate(nums[0], nums[1], first_results);
+    swapped[0] = calculate(nums[0], nums[1], first_results);
     skip_quotient = first_results[3] < 0 ? first_results[3] : 0;
     for (int i = 0; i < 4 + skip_quotient; ++i)
     {
-        swapped_second = calculate(nums[2], first_results[i], second_results);
+        swapped[1] = calculate(nums[2], first_results[i], second_results);
         skip_quotient = first_results[3] < 0 ? first_results[3] : 0;
         for (int j = 0; j < 4 + skip_quotient; ++j)
         {
-            swapped_third = calculate(nums[3], second_results[j], third_results);
+            swapped[3] = calculate(nums[3], second_results[j], third_results);
             skip_quotient = first_results[3] < 0 ? first_results[3] : 0;
             for (int k = 0; k < 4 + skip_quotient; ++k)
             {
                 if (third_results[k] == 24)
                 {
-                    if (!swapped_first)
-                    {
-                        std::cout << nums[0] << " " << operations[i] << " " << nums[1] << " = " << first_results[i] << "\n";
-                    }   else    {
-                        std::cout << nums[1] << " " << operations[i] << " " << nums[0] << " = " << first_results[i] << "\n";
-                    }
-                    if (!swapped_second)
-                    {
-                        std::cout << nums[2] << " " << operations[j] << " " << first_results[i] << " = " << second_results[j] << "\n";
-                    }   else    {
-                        std::cout << first_results[i] << " " << operations[j] << " " << nums[2] << " = " << second_results[j] << "\n";
-                    }
-                    if (!swapped_third)
-                    {
-                        std::cout << nums[3] << " " << operations[k] << " " << second_results[j] << " = " << third_results[k] << "\n";
-                    }   else    {
-                        std::cout << second_results[j] << " " << operations[k] << " " << nums[3] << " = " << third_results[k] << "\n";
-                    }
+                    printResults(swapped, i, j, k, nums, first_results[i], second_results[j]);
                     return true;
                 }
             }
         }
     }
     return false;
+}
+
+void printResults(bool swapped[], int op1, int op2, int op3, int nums[], int first_result, int second_result)  {
+    if (!swapped[0])
+    {
+        std::cout << nums[0] << " " << operations[op1] << " " << nums[1] << " = " << first_result << "\n";
+    }   else    {
+        std::cout << nums[1] << " " << operations[op1] << " " << nums[0] << " = " << first_result << "\n";
+    }
+    if (!swapped[1])
+    {
+        std::cout << nums[2] << " " << operations[op2] << " " << first_result << " = " << second_result << "\n";
+    }   else    {
+        std::cout << first_result << " " << operations[op2] << " " << nums[2] << " = " << second_result << "\n";
+    }
+    if (!swapped[2])
+    {
+        std::cout << nums[3] << " " << operations[op3] << " " << second_result << " = 24\n";
+    }   else    {
+        std::cout << second_result << " " << operations[op3] << " " << nums[3] << " = 24\n";
+    }
 }
