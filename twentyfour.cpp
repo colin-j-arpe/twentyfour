@@ -4,7 +4,7 @@
 
 bool calculate(int x, int y, int results[]);
 bool find24(int numbers[]);
-void printResults(bool were_the_numbers_swapped[], int first_operation_index, int second_operation_index, int third_operation_index, int nums[], int first_result, int second_result);
+void printResults(bool were_the_numbers_swapped[], int first_operation_index, int second_operation_index, int third_operation_index, int nums[], int first_result, int first_result_or_last_num, int last_num_or_first_result, int second_result);
 
 const char operations[4] = {'+', '-', '*', '/'};
 
@@ -89,12 +89,27 @@ bool find24(int nums[])   {
         for (int j = 0; j < 4 + skip_quotient; ++j)
         {
             swapped[3] = calculate(nums[3], second_results[j], third_results);
-            skip_quotient = first_results[3] < 0 ? first_results[3] : 0;
+            skip_quotient = second_results[3] < 0 ? second_results[3] : 0;
             for (int k = 0; k < 4 + skip_quotient; ++k)
             {
                 if (third_results[k] == 24)
                 {
-                    printResults(swapped, i, j, k, nums, first_results[i], second_results[j]);
+                    printResults(swapped, i, j, k, nums, first_results[i], first_results[i], nums[3], second_results[j]);
+                    return true;
+                }
+            }
+        }
+        swapped[1] = calculate(nums[2], nums[3], second_results);
+        skip_quotient = first_results[3] < 0 ? first_results[3] : 0;
+        for (int j = 0; j < 4 + skip_quotient; ++j)
+        {
+            swapped[3] = calculate(first_results[i], second_results[j], third_results);
+            skip_quotient = second_results[3] < 0 ? second_results[3] : 0;
+            for (int k = 0; k < 4 + skip_quotient; ++k)
+            {
+                if (third_results[k] == 24)
+                {
+                    printResults(swapped, i, j, k, nums, first_results[i], nums[3], first_results[i], second_results[j]);
                     return true;
                 }
             }
@@ -103,7 +118,7 @@ bool find24(int nums[])   {
     return false;
 }
 
-void printResults(bool swapped[], int op1, int op2, int op3, int nums[], int first_result, int second_result)  {
+void printResults(bool swapped[], int op1, int op2, int op3, int nums[], int first_result, int first_result_or_last_num, int last_num_or_first_result, int second_result)  {
     if (!swapped[0])
     {
         std::cout << nums[0] << " " << operations[op1] << " " << nums[1] << " = " << first_result << "\n";
@@ -112,14 +127,14 @@ void printResults(bool swapped[], int op1, int op2, int op3, int nums[], int fir
     }
     if (!swapped[1])
     {
-        std::cout << nums[2] << " " << operations[op2] << " " << first_result << " = " << second_result << "\n";
+        std::cout << nums[2] << " " << operations[op2] << " " << first_result_or_last_num << " = " << second_result << "\n";
     }   else    {
-        std::cout << first_result << " " << operations[op2] << " " << nums[2] << " = " << second_result << "\n";
+        std::cout << first_result_or_last_num << " " << operations[op2] << " " << nums[2] << " = " << second_result << "\n";
     }
     if (!swapped[2])
     {
-        std::cout << nums[3] << " " << operations[op3] << " " << second_result << " = 24\n";
+        std::cout << last_num_or_first_result << " " << operations[op3] << " " << second_result << " = 24\n";
     }   else    {
-        std::cout << second_result << " " << operations[op3] << " " << nums[3] << " = 24\n";
+        std::cout << second_result << " " << operations[op3] << " " << last_num_or_first_result << " = 24\n";
     }
 }
