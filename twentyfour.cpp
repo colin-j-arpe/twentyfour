@@ -77,6 +77,11 @@ bool createPermutations(int array[], int position, int length) {
             resetAfterTraversal(array, position);
         }
     }
+    return solutionHasBeenFound;
+}
+
+void swapNumbers(int array[], int x, int y) {
+    int temp = array[x]; array[x] = array[y]; array[y] = temp;
 }
 
 void resetAfterTraversal(int array[], int endPoint) {
@@ -86,10 +91,6 @@ void resetAfterTraversal(int array[], int endPoint) {
         array[i] = array[i + 1];
     }
     array[endPoint] = temp;
-}
-
-void swapNumbers(int array[], int x, int y) {
-    int temp = array[x]; array[x] = array[y]; array[y] = temp;
 }
 
 bool calculate (int x, int y, int array[])  {
